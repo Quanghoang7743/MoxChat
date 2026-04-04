@@ -26,6 +26,7 @@ const resolveConfig = () => {
   return {
     broadcaster: 'reverb',
     key: import.meta.env.VITE_REVERB_APP_KEY,
+    cluster: import.meta.env.VITE_REVERB_CLUSTER || 'mt1',
     wsHost,
     wsPort: toNumber(import.meta.env.VITE_REVERB_PORT, isHttps ? 443 : 8080),
     wssPort: toNumber(import.meta.env.VITE_REVERB_PORT, 443),
