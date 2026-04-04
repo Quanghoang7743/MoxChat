@@ -69,7 +69,7 @@ const buildDeviceForm = () => ({
 })
 
 export default function Mesage() {
-  const { user, logout, setUser } = useAuth()
+  const { user, token, logout, setUser } = useAuth()
 
   const [darkMode] = React.useState(false)
   const [conversations, setConversations] = React.useState([])
@@ -427,7 +427,7 @@ export default function Mesage() {
 
   React.useEffect(() => {
     const ids = conversations.map((conversation) => conversation.id)
-    if (ids.length === 0 || !user?.id) {
+    if (ids.length === 0 || !user?.id || !token) {
       return undefined
     }
 
@@ -565,13 +565,13 @@ export default function Mesage() {
             })
           }, 2200)
         },
-      })
+      }, token)
     })
 
     return () => {
       leaveCallbacks.forEach((leave) => leave())
     }
-  }, [conversations, fetchConversations, patchMessage, upsertMessage, user?.id])
+  }, [conversations, fetchConversations, patchMessage, token, upsertMessage, user?.id])
 
   React.useEffect(() => {
     if (!activeConversationId) {
@@ -586,11 +586,11 @@ export default function Mesage() {
         setPresenceUsers((previous) => previous.filter((item) => Number(item.id) !== Number(member.id)))
       },
       onError: () => setPresenceUsers([]),
-    })
-  }, [activeConversationId])
+    }, token)
+  }, [activeConversationId, token])
 
   React.useEffect(() => {
-    if (!user?.id) {
+    if (!user?.id || !token) {
       return undefined
     }
 
@@ -600,8 +600,8 @@ export default function Mesage() {
       onFriendRequestRejected: () => fetchFriendData(),
       onFriendRemoved: () => fetchFriendData(),
       onConversationSettingsUpdated: () => fetchConversations(),
-    })
-  }, [fetchConversations, fetchFriendData, user?.id])
+    }, token)
+  }, [fetchConversations, fetchFriendData, token, user?.id])
 
   React.useEffect(() => {
     if (!activeConversationId || !user?.id || !latestMessageId) {
